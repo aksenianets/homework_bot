@@ -1,0 +1,6 @@
+.venv
+data
+__pycache__
+\handlers\__pycache__
+Bot.py
+data.sqbpro
