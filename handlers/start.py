@@ -45,7 +45,7 @@ async def button(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     await query.answer()
     chat_hr = query.data
 
-    log.logger.info("button %s, query=%s", update.message.from_user.id, query.data)
+    log.logger.info("button %s, query=%s", query.from_user.username, query.data)
 
     if chat_hr != "Отмена" and chat_hr != "Нет":
         if chat_hr != "Да":

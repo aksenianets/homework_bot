@@ -3,7 +3,7 @@ import sqlite3
 from itertools import zip_longest
 import shutil
 
-from handlers import env
+from handlers import env, log
 
 VALIDHASHTAGS = env.ValHash.VALIDHASHTAGS
 ABSOLUTEPATH = env.AbsPath.ABSOLUTEPATH
@@ -152,7 +152,7 @@ def add_homework(chat_id: int, subject_id: str, message_id: int) -> None:
         add_query = f"""
             INSERT INTO Messages
             VALUES(?, ?, ?, ?, ?), 
-            ({message_id}, {datetime.now().strftime("%d%m%Y")} , {chat_id}, "{subject_id}", "{message_id}.{chat_id}")
+            ({message_id}, {int("9" + datetime.now().strftime("%m%d%Y"))} , {chat_id}, "{subject_id}", "{message_id}.{chat_id}")
         """
 
         with sqlite3.connect(PATHTODB) as con:
@@ -277,3 +277,32 @@ def grouper(iterable: list, n: int) -> list[str]:
         result[-1] = result[-1][: result[-1].index(None)]
 
     return result
+
+
+def fix_days(a, b) -> None:
+    get_query = "SELECT id, data from Messages"
+    res = sqlite3.connect(PATHTODB).execute(get_query)
+    res = [x for x in res if None not in x]
+
+    for x in res:
+        nd = str(x[1])
+        nd = "9" + nd[-6:-4].rjust(2, "0") + nd[:-6].rjust(2, "0") + nd[-4:]
+        nd = int(nd)
+
+        fix_query = f"""
+            UPDATE Messages
+            SET (messageid, data, chatid, subjectid, id) = (messageid, {nd}, chatid, subjectid, id)
+            WHERE id = "{x[0]}"
+        """
+
+        with sqlite3.connect(PATHTODB) as con:
+            con.executescript(fix_query)
+
+    check_query = f"""
+        SELECT data, subjectid FROM Messages
+        ORDER BY data
+    """
+    res = sqlite3.connect(PATHTODB).execute(check_query)
+    res = [x for x in res if None not in x]
+
+    log.logger.warning("%s", res)
