@@ -41,5 +41,5 @@ class AdmPassw:
 
 
 class AbsPath:
-    ABSOLUTEPATH: Final = "/home/aksenianets/"
-    # ABSOLUTEPATH: Final = ""
+    # ABSOLUTEPATH: Final = "/home/aksenianets/"
+    ABSOLUTEPATH: Final = ""

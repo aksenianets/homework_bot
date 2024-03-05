@@ -5,6 +5,8 @@ import shutil
 
 from handlers import env, log
 
+# import env
+
 VALIDHASHTAGS = env.ValHash.VALIDHASHTAGS
 ABSOLUTEPATH = env.AbsPath.ABSOLUTEPATH
 PATHTODB = ABSOLUTEPATH + "data.db"
@@ -195,7 +197,7 @@ def get_homework(chat_id: int, subject_id: str) -> list[tuple]:
 
 def get_last_homework(chat_id: int) -> str:
     get_query = f"""
-        SELECT subjectid FROM Messages
+        SELECT messageid, subjectid FROM Messages
         WHERE chatid={chat_id}
         ORDER BY data
     """
@@ -286,7 +288,7 @@ def fix_days(a, b) -> None:
 
     for x in res:
         nd = str(x[1])
-        nd = "9" + nd[-6:-4].rjust(2, "0") + nd[:-6].rjust(2, "0") + nd[-4:]
+        nd = nd[-4:] + nd[1:-4]
         nd = int(nd)
 
         fix_query = f"""
