@@ -279,32 +279,3 @@ def grouper(iterable: list, n: int) -> list[str]:
         result[-1] = result[-1][: result[-1].index(None)]
 
     return result
-
-
-def fix_days(a, b) -> None:
-    get_query = "SELECT id, data from Messages"
-    res = sqlite3.connect(PATHTODB).execute(get_query)
-    res = [x for x in res if None not in x]
-
-    for x in res:
-        nd = str(x[1])
-        nd = nd[-4:] + nd[1:-4]
-        nd = int(nd)
-
-        fix_query = f"""
-            UPDATE Messages
-            SET (messageid, data, chatid, subjectid, id) = (messageid, {nd}, chatid, subjectid, id)
-            WHERE id = "{x[0]}"
-        """
-
-        with sqlite3.connect(PATHTODB) as con:
-            con.executescript(fix_query)
-
-    check_query = f"""
-        SELECT data, subjectid FROM Messages
-        ORDER BY data
-    """
-    res = sqlite3.connect(PATHTODB).execute(check_query)
-    res = [x for x in res if None not in x]
-
-    log.logger.warning("%s", res)

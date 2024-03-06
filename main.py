@@ -43,7 +43,7 @@ if __name__ == "__main__":
                 )
             ]
         },
-        fallbacks=[MessageHandler(filters.TEXT, ConversationHandler.END)],
+        fallbacks=[MessageHandler(filters.TEXT, homework.stop)],
     )
     application.add_handler(homework_handler)
 
@@ -110,7 +110,8 @@ if __name__ == "__main__":
 
     # other
     application.add_error_handler(senderror.error_handler)
-    application.add_handler(CommandHandler("fixdates", funcs.fix_days))
+
+    application.add_handler(CommandHandler("sendwithids", admin.send_all_with_ids))
     # deleted - i dont know, but it breaks bot((
     # application.add_handler(
     #     ChatMemberHandler(getchats.track_chats, ChatMemberHandler.MY_CHAT_MEMBER)

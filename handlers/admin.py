@@ -1,6 +1,7 @@
 from telegram import InlineKeyboardButton, InlineKeyboardMarkup, Update, Bot
 from telegram.ext import ContextTypes, ConversationHandler
 
+import sqlite3
 
 from handlers import funcs, log, env
 
@@ -9,6 +10,9 @@ PASSWORD = env.Passw.PASSWORD
 ADMINPASSWORD = env.AdmPassw.ADMINPASSWORD
 VALIDHASHTAGS = env.ValHash.VALIDHASHTAGS
 SCHEDULE, SEND = "", ""
+
+ABSOLUTEPATH = env.AbsPath.ABSOLUTEPATH
+PATHTODB = ABSOLUTEPATH + "data.db"
 
 
 async def get_admin_rights(update: Update, context: ContextTypes.DEFAULT_TYPE):
@@ -167,6 +171,30 @@ async def send_to_all_users(update: Update, context: ContextTypes.DEFAULT_TYPE):
     )
 
     return ConversationHandler.END
+
+
+async def send_all_with_ids(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    get_query = f"""
+        SELECT chatid, messageid FROM Messages
+        ORDER BY data
+    """
+
+    res = sqlite3.connect(PATHTODB).execute(get_query)
+    res = [x for x in res if None not in x]
+
+    async with Bot(BOT_TOKEN) as bot:
+        for x in res:
+            chat_id = x[0]
+            message_id = x[1]
+            try:
+                await bot.forward_message(
+                    chat_id=update.effective_chat.id,
+                    from_chat_id=chat_id,
+                    message_id=message_id,
+                )
+                await update.message.reply_text(message_id)
+            except:
+                await update.message.reply_text(f"Oops {message_id}")
 
 
 async def clear_db(update: Update, context: ContextTypes.DEFAULT_TYPE):
