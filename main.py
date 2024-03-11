@@ -30,7 +30,11 @@ if __name__ == "__main__":
                     filters.CaptionEntity(MessageEntity.HASHTAG)
                     | filters.Entity(MessageEntity.HASHTAG)
                 )
-                & (filters.ChatType.GROUP | filters.ChatType.SUPERGROUP),
+                & (
+                    filters.ChatType.GROUP
+                    | filters.ChatType.SUPERGROUP
+                    | filters.Chat(funcs.get_admins())
+                ),
                 homework.save,
             )
         ],
@@ -100,9 +104,7 @@ if __name__ == "__main__":
     send_to_all_users_handler = ConversationHandler(
         entry_points=[CommandHandler("SAU", admin.ask_text, filters.ChatType.PRIVATE)],
         states={
-            admin.SEND: [
-                MessageHandler(filters.TEXT & ~filters.COMMAND, admin.send_to_all_users)
-            ]
+            admin.SEND: [MessageHandler(~filters.COMMAND, admin.send_to_all_users)]
         },
         fallbacks=[MessageHandler(filters.COMMAND, admin.stop)],
     )

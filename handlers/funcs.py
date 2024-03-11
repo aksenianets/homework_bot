@@ -60,6 +60,20 @@ def check_admin(user_id: int) -> None:
     return (user_id,) in res
 
 
+def get_admins() -> list[int]:
+    get_query = """
+        SELECT userid
+        FROM Users
+        WHERE admin=1    
+    """
+
+    res = sqlite3.connect(PATHTODB).execute(get_query)
+    res = [x[0] for x in res if None not in x]
+    res = set(res)
+
+    return res
+
+
 # actions with users
 def add_user(user_id: int, chat_id: int) -> None:
     try:

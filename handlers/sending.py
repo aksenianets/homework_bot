@@ -48,7 +48,7 @@ async def send_all(update: Update, context: ContextTypes.DEFAULT_TYPE):
                 no_homework.append(x)
     if fl:
         await update.message.reply_text(
-            f"Я не смог отправить дз по {', '.join(no_homework)}",
+            f"Упс, дз по {', '.join(no_homework)} отправить не вышло((",
             reply_markup=ReplyKeyboardRemove(),
         )
 
@@ -61,7 +61,7 @@ async def ask_subject(update: Update, context: ContextTypes.DEFAULT_TYPE):
     subjects = ReplyKeyboardMarkup(reply_keyboard, one_time_keyboard=True)
 
     await update.message.reply_text(
-        "По какому предмету дз вам нужно?", reply_markup=subjects
+        "Чего хочешь добрый человек?", reply_markup=subjects
     )
 
     return SUBJECT
@@ -73,7 +73,9 @@ async def send_subject(update: Update, context: ContextTypes.DEFAULT_TYPE):
     subject = update.message.text
 
     if subject not in VALIDHASHTAGS.values():
-        await update.message.reply_text("Такого предмета я не знаю\nПопробуйте снова")
+        await update.message.reply_text(
+            "Чегось? Ась?\nЯ такого не слышал, попробуй ещё разок"
+        )
     else:
 
         async with Bot(BOT_TOKEN) as bot:
@@ -100,7 +102,7 @@ async def send_subject(update: Update, context: ContextTypes.DEFAULT_TYPE):
                         )
                 except:
                     await update.message.reply_text(
-                        f"Извините, произошла какая-то ошибка",
+                        f"Ойой, технические шоколадки",
                         reply_markup=ReplyKeyboardRemove(),
                     )
             else:
@@ -114,20 +116,23 @@ async def send_subject(update: Update, context: ContextTypes.DEFAULT_TYPE):
                         )
                 except:
                     await update.message.reply_text(
-                        f"Извините, произошла какая-то ошибка",
+                        f"Ойой, технические шоколадки",
                         reply_markup=ReplyKeyboardRemove(),
                     )
         else:
             await update.message.reply_text(
-                f"У меня ещё нет дз по {subject}", reply_markup=ReplyKeyboardRemove()
+                f"Упс, дз по {subject} отправить не вышло((",
+                reply_markup=ReplyKeyboardRemove(),
             )
 
         return ConversationHandler.END
 
 
 async def stop(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    await update.message.reply_text(
-        "Действие остановлено", reply_markup=ReplyKeyboardRemove()
+    await update.message.reply_markdown_v2(
+        text="[Stop, wait a minute](https://youtu.be/w_Fk0i9Vq_o)\ \nКороче, остановил действие",
+        reply_markup=ReplyKeyboardRemove(),
+        disable_web_page_preview=True,
     )
 
     return ConversationHandler.END

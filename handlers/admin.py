@@ -23,12 +23,14 @@ async def get_admin_rights(update: Update, context: ContextTypes.DEFAULT_TYPE):
             log.logger.info("%s now admin", update.message.from_user.username)
             funcs.make_admin(update.message.from_user.id)
 
-            await update.message.reply_text("Теперь вам доступна команда\n/setschedule")
+            await update.message.reply_text(
+                "Теперь ты можешь использовать\n/setschedule\nА ещё отпрвлять дз не в общий чат, а прямо мне"
+            )
         else:
-            await update.message.reply_text("Вы уже админ")
+            await update.message.reply_text("Да ты уже ведь админ, бро")
 
     else:
-        await update.message.reply_text("Неверный пароль")
+        await update.message.reply_text("Неа, не угадал пароль;)")
 
 
 async def unadmin_all(update: Update, context: ContextTypes.DEFAULT_TYPE):
@@ -40,6 +42,9 @@ async def unadmin_all(update: Update, context: ContextTypes.DEFAULT_TYPE):
                 "All admins removed by %s", update.message.from_user.username
             )
             funcs.unadmin_all()
+            await update.message.reply_text(
+                "Ничего себе, что наделал\nТеперь админов нет, press F"
+            )
 
 
 async def ask_shedule(update: Update, context: ContextTypes.DEFAULT_TYPE):
@@ -66,7 +71,7 @@ async def ask_shedule(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
         return SCHEDULE
     else:
-        await update.message.reply_text("Вы не являетесь админом")
+        await update.message.reply_text("Да ты ведь не админ, прикинь")
 
         return ConversationHandler.END
 
@@ -79,7 +84,7 @@ async def set_schedule(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
     if len(schedule) != 5:
         await update.message.reply_text(
-            "Расписание введено неккорктно\nПовторите попытку или используйте /stop"
+            "Ничего не понял, ты явно написал что-то не так\nДавай ещё разок или /stop"
         )
     else:
         user_chat = funcs.get_user_info(update.message.from_user.id)[0][1]
@@ -93,7 +98,9 @@ async def set_schedule(update: Update, context: ContextTypes.DEFAULT_TYPE):
             funcs.set_schedule(user_chat, schedule)
             log.logger.info("Schedule has been set for %s", chatname)
 
-            await update.message.reply_text(f"Расписание для {chatname} установлено")
+            await update.message.reply_text(
+                f"Агаа, для {chatname} расписание запомнил!"
+            )
 
             async with Bot(BOT_TOKEN) as bot:
                 await bot.delete_messages(
@@ -104,7 +111,7 @@ async def set_schedule(update: Update, context: ContextTypes.DEFAULT_TYPE):
             return ConversationHandler.END
         else:
             await update.message.reply_text(
-                "Расписание введено неккоректно\nПовторите попытку или используйте /stop"
+                "Ничего не понял, ты явно написал что-то не так\nДавай ещё разок или /stop"
             )
 
 
@@ -123,16 +130,14 @@ async def delete_chat(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
         await context.bot.send_message(
             chat_id=update.effective_chat.id,
-            text=f"Вы уверены, что хотите удалить чат {chats[user_chat]}?",
+            text=f"Тактактак, ты точно хочешь снизвести {chats[user_chat]}?",
             reply_markup=reply_markup,
         )
 
 
 async def ask_text(update: Update, context: ContextTypes.DEFAULT_TYPE):
     if funcs.check_admin(update.message.from_user.id):
-        await update.message.reply_text(
-            "Отправьте мне сообщение, которое нужно отправить всем юзерам"
-        )
+        await update.message.reply_text("Ну тогда давай, что нужно всем переслать")
 
         return SEND
 
@@ -156,7 +161,9 @@ async def send_to_all_users(update: Update, context: ContextTypes.DEFAULT_TYPE):
                     protect_content=True,
                 )
             except:
-                await update.message.reply_text(f"Сообщение {x} не отправлено")
+                await update.message.reply_text(
+                    f"Ой, вот ему(ей) отправить не получилось - {x}"
+                )
                 fl = False
 
     if fl:
@@ -169,6 +176,7 @@ async def send_to_all_users(update: Update, context: ContextTypes.DEFAULT_TYPE):
     log.logger.info(
         "Message sent to all users by %s", update.message.from_user.username
     )
+    await update.message.reply_text(f"Готово, босс, всем отправил!")
 
     return ConversationHandler.END
 
@@ -201,12 +209,15 @@ async def clear_db(update: Update, context: ContextTypes.DEFAULT_TYPE):
     if update.message.text == f"/cleardb {ADMINPASSWORD}":
         if funcs.check_admin(update.message.from_user.id):
             funcs.clear_all()
-            await update.message.reply_text("БД полностью очищена")
+            await update.message.reply_text("БД уничтожена((")
             log.logger.warning("DB is cleared by %s", update.message.from_user.username)
 
 
 async def stop(update: Update, context: ContextTypes.DEFAULT_TYPE):
     log.logger.warning("cancel %s", update.message.from_user.id)
 
-    await update.message.reply_text("Действие отменено")
+    await update.message.reply_markdown_v2(
+        text="[Stop, wait a minute](https://youtu.be/w_Fk0i9Vq_o)\ \nКороче, остановил действие",
+        disable_web_page_preview=True,
+    )
     return ConversationHandler.END
