@@ -87,7 +87,6 @@ async def save(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
     # проверка есть ли хэштег
     if mess_capt_entities or mess_entities:
-        print(len(mess_capt_entities), len(mess_entities))
         if mess_capt_entities:
             # если есть фотка
             hashtag_text = update.message.parse_caption_entity(mess_capt_entities[0])
@@ -107,6 +106,8 @@ async def save(update: Update, context: ContextTypes.DEFAULT_TYPE):
                 username,
                 chat_title,
             )
+
+            await update.message.reply_text("Я это запомню...")
 
             return NEXT
 

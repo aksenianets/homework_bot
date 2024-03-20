@@ -100,6 +100,12 @@ async def send_subject(update: Update, context: ContextTypes.DEFAULT_TYPE):
                             from_chat_id=user_chat,
                             message_id=homework[0][0],
                         )
+                        date = str(homework[0][1])
+                        date = f"{date[-2:]}.{date[-4:-2]}"
+                        await bot.send_message(
+                            chat_id=update.effective_chat.id,
+                            text=f"ДЗ от {date}",
+                        )
                 except:
                     await update.message.reply_text(
                         f"Ойой, технические шоколадки",

@@ -10,7 +10,15 @@ from telegram.ext import (
 )
 import shutil
 
-from handlers import sending, start, admin, homework, env, funcs, senderror
+from handlers import (
+    sending,
+    start,
+    admin,
+    homework,
+    env,
+    funcs,
+    senderror,
+)
 
 if funcs.check_all():
     shutil.copy(
@@ -30,11 +38,7 @@ if __name__ == "__main__":
                     filters.CaptionEntity(MessageEntity.HASHTAG)
                     | filters.Entity(MessageEntity.HASHTAG)
                 )
-                & (
-                    filters.ChatType.GROUP
-                    | filters.ChatType.SUPERGROUP
-                    | filters.Chat(funcs.get_admins())
-                ),
+                & (filters.ChatType.GROUP | filters.ChatType.SUPERGROUP),
                 homework.save,
             )
         ],
@@ -55,9 +59,11 @@ if __name__ == "__main__":
     application.add_handler(
         CommandHandler("start", start.start, filters.ChatType.PRIVATE)
     )
+
     application.add_handler(
         CommandHandler("sendall", sending.send_all, filters.ChatType.PRIVATE)
     )
+
     send_subject_handler = ConversationHandler(
         entry_points=[
             CommandHandler("sendme", sending.ask_subject, filters.ChatType.PRIVATE)
@@ -80,6 +86,7 @@ if __name__ == "__main__":
     application.add_handler(
         CommandHandler("getadmin", admin.get_admin_rights, filters.ChatType.PRIVATE)
     )
+
     schedule_handler = ConversationHandler(
         entry_points=[
             CommandHandler("setschedule", admin.ask_shedule, filters.ChatType.PRIVATE)
@@ -92,15 +99,19 @@ if __name__ == "__main__":
         fallbacks=[MessageHandler(filters.COMMAND, admin.stop)],
     )
     application.add_handler(schedule_handler)
+
     application.add_handler(
         CommandHandler("cleardb", admin.clear_db, filters.ChatType.PRIVATE)
     )
+
     application.add_handler(
         CommandHandler("deletechat", admin.delete_chat, filters.ChatType.PRIVATE)
     )
+
     application.add_handler(
         CommandHandler("unadmin", admin.unadmin_all, filters.ChatType.PRIVATE)
     )
+
     send_to_all_users_handler = ConversationHandler(
         entry_points=[CommandHandler("SAU", admin.ask_text, filters.ChatType.PRIVATE)],
         states={
@@ -110,10 +121,11 @@ if __name__ == "__main__":
     )
     application.add_handler(send_to_all_users_handler)
 
+    application.add_handler(CommandHandler("sendwithids", admin.send_all_with_ids))
+
     # other
     application.add_error_handler(senderror.error_handler)
 
-    application.add_handler(CommandHandler("sendwithids", admin.send_all_with_ids))
     # deleted - i dont know, but it breaks bot((
     # application.add_handler(
     #     ChatMemberHandler(getchats.track_chats, ChatMemberHandler.MY_CHAT_MEMBER)
