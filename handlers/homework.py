@@ -56,6 +56,7 @@
 #             return NEXT
 
 #         return ConversationHandler.END
+import random
 from telegram import Update
 from telegram.ext import ContextTypes, ConversationHandler
 
@@ -107,7 +108,28 @@ async def save(update: Update, context: ContextTypes.DEFAULT_TYPE):
                 chat_title,
             )
 
-            await update.message.reply_text("Я это запомню...")
+            await update.message.reply_text(
+                random.choice(
+                    [
+                        "Я это запомню...",
+                        "Мдаа, зачем это делать..",
+                        "Ну устно, так устно))",
+                        "Пон.",
+                        "Меняй!",
+                        "No comments",
+                        "Предлагаю не делать)",
+                        "Делайте тг-ботов, а не вот это вот всё",
+                        "Не придумал, что ответить",
+                        "Сомнительноо, но окэй...",
+                        "Вот мне лично это не интересно, за других сказать не могу",
+                        "Соболезную, ребят...",
+                        "Может быть, стоит обсудить это ещё раз?",
+                        "Давайте просто наслаждаться моментом",
+                        "Что-то в этом есть, но может ну его?..",
+                        "Не в моих интересах.",
+                    ]
+                )
+            )
 
             return NEXT
 

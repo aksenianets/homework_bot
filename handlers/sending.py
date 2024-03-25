@@ -31,22 +31,41 @@ async def send_all(update: Update, context: ContextTypes.DEFAULT_TYPE):
                                 from_chat_id=user_chat,
                                 message_id=homework[0][0],
                             )
-                    except:
-                        no_homework.append(x)
-                else:
-                    homework = [mess_id[0] for mess_id in homework]
-                    try:
-                        async with Bot(BOT_TOKEN) as bot:
-                            await bot.forward_messages(
+
+                            date = str(homework[0][1])
+                            date = f"{date[3:5]}.{date[1:3]}"
+                            await bot.send_message(
                                 chat_id=update.effective_chat.id,
-                                from_chat_id=user_chat,
-                                message_ids=homework,
+                                text=f"ДЗ от {date}",
                             )
                     except:
                         no_homework.append(x)
+                else:
+                    await update.message.reply_text("2")
+                    for x in homework:
+                        try:
+                            async with Bot(BOT_TOKEN) as bot:
+                                # пересылание дз
+                                await bot.forward_message(
+                                    chat_id=update.effective_chat.id,
+                                    from_chat_id=user_chat,
+                                    message_id=x[0],
+                                )
+
+                                # отправка даты пересылаемого сообщения
+                                date = str(x[1])
+                                date = f"{date[3:5]}.{date[1:3]}"
+                                await bot.send_message(
+                                    chat_id=update.effective_chat.id,
+                                    text=f"ДЗ от {date}",
+                                )
+                        except:
+                            no_homework.append(x)
             else:
                 no_homework.append(x)
+
     if fl:
+        print(no_homework)
         await update.message.reply_text(
             f"Упс, дз по {', '.join(no_homework)} отправить не вышло((",
             reply_markup=ReplyKeyboardRemove(),
@@ -100,8 +119,9 @@ async def send_subject(update: Update, context: ContextTypes.DEFAULT_TYPE):
                             from_chat_id=user_chat,
                             message_id=homework[0][0],
                         )
+
                         date = str(homework[0][1])
-                        date = f"{date[-2:]}.{date[-4:-2]}"
+                        date = f"{date[3:5]}.{date[1:3]}"
                         await bot.send_message(
                             chat_id=update.effective_chat.id,
                             text=f"ДЗ от {date}",
@@ -112,19 +132,27 @@ async def send_subject(update: Update, context: ContextTypes.DEFAULT_TYPE):
                         reply_markup=ReplyKeyboardRemove(),
                     )
             else:
-                homework = [mess_id[0] for mess_id in homework]
-                try:
-                    async with Bot(BOT_TOKEN) as bot:
-                        await bot.forward_messages(
-                            chat_id=update.effective_chat.id,
-                            from_chat_id=user_chat,
-                            message_ids=homework,
+                for x in homework:
+                    try:
+                        async with Bot(BOT_TOKEN) as bot:
+                            await bot.forward_message(
+                                chat_id=update.effective_chat.id,
+                                from_chat_id=user_chat,
+                                message_id=x[0],
+                            )
+
+                            date = str(x[1])
+                            date = f"{date[3:5]}.{date[1:3]}"
+
+                            await bot.send_message(
+                                chat_id=update.effective_chat.id,
+                                text=f"ДЗ от {date}",
+                            )
+                    except:
+                        await update.message.reply_text(
+                            f"Ойой, технические шоколадки",
+                            reply_markup=ReplyKeyboardRemove(),
                         )
-                except:
-                    await update.message.reply_text(
-                        f"Ойой, технические шоколадки",
-                        reply_markup=ReplyKeyboardRemove(),
-                    )
         else:
             await update.message.reply_text(
                 f"Упс, дз по {subject} отправить не вышло((",
