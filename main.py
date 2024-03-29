@@ -38,7 +38,8 @@ if __name__ == "__main__":
                     filters.CaptionEntity(MessageEntity.HASHTAG)
                     | filters.Entity(MessageEntity.HASHTAG)
                 )
-                & (filters.ChatType.GROUP | filters.ChatType.SUPERGROUP),
+                & (filters.ChatType.GROUP | filters.ChatType.SUPERGROUP)
+                & (filters.UpdateType.EDITED | ~filters.UpdateType.EDITED),
                 homework.save,
             )
         ],
@@ -46,7 +47,8 @@ if __name__ == "__main__":
             homework.NEXT: [
                 MessageHandler(
                     filters.PHOTO
-                    & (filters.ChatType.GROUP | filters.ChatType.SUPERGROUP),
+                    & (filters.ChatType.GROUP | filters.ChatType.SUPERGROUP)
+                    & (filters.UpdateType.EDITED | ~filters.UpdateType.EDITED),
                     homework.save,
                 )
             ]

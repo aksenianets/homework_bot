@@ -1,61 +1,3 @@
-# from telegram import Update
-# from telegram.ext import ContextTypes, ConversationHandler
-
-
-# from handlers import funcs, log, env
-
-# NEXT = ""
-# VALIDHASHTAGS = env.ValHash.VALIDHASHTAGS
-
-
-# async def save(update: Update, context: ContextTypes.DEFAULT_TYPE):
-#     chats = [x[0] for x in funcs.get_chats()]
-
-#     chat = update.message.chat
-#     if chat.id not in chats:
-#         funcs.add_chat(chat.id, chat.title)
-
-#     # получение всех хэштегов
-#     mess_capt_entities = update.message.caption_entities
-#     mess_entities = update.message.entities
-
-#     # проверка есть ли хэштег
-#     if mess_capt_entities or mess_entities:
-#         fl = True
-#         if mess_capt_entities:
-#             # если есть фотка
-#             hashtag_text = update.message.parse_caption_entity(mess_capt_entities[0])
-#         else:
-#             # если её нет
-#             hashtag_text = update.message.parse_entity(mess_entities[0])
-#             fl = False
-
-#         if hashtag_text in VALIDHASHTAGS.keys():
-#             # сохранение сообщения для пересылки
-#             chat_id = update.message.chat.id
-
-#             funcs.add_homework(chat_id, hashtag_text, update.message.id)
-#             log.logger.info(
-#                 "Saved %s from %s in %s",
-#                 hashtag_text,
-#                 update.message.from_user.username,
-#                 update.message.chat.title,
-#             )
-
-#             if fl:
-#                 return NEXT
-
-#             return ConversationHandler.END
-
-#         return ConversationHandler.END
-#     else:
-#         last_homework = funcs.get_last_homework(update.message.chat.id)
-
-#         if last_homework:
-#             funcs.add_homework(update.message.chat.id, last_homework, update.message.id)
-#             return NEXT
-
-#         return ConversationHandler.END
 import random
 from telegram import Update
 from telegram.ext import ContextTypes, ConversationHandler
@@ -71,10 +13,16 @@ VALID_HASHTAGS = handlers.env.ValHash.VALIDHASHTAGS
 async def save(update: Update, context: ContextTypes.DEFAULT_TYPE):
     """Save user's homework message."""
 
-    chat = update.message.chat
-    chat_id = chat.id
-    chat_title = chat.title
-    username = update.message.from_user.username
+    if not update.edited_message:
+        chat = update.message.chat
+        chat_id = chat.id
+        chat_title = chat.title
+        username = update.message.from_user.username
+    else:
+        chat = update.edited_message.chat
+        chat_id = chat.id
+        chat_title = chat.title
+        username = update.edited_message.from_user.username
 
     # Check if the chat is already registered
     chats = [x[0] for x in handlers.funcs.get_chats()]
@@ -83,22 +31,41 @@ async def save(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
     # Process caption and entities
     hashtag_text = None
-    mess_capt_entities = update.message.caption_entities
-    mess_entities = update.message.entities
+    if not update.edited_message:
+        mess_capt_entities = update.message.caption_entities
+        mess_entities = update.message.entities
+    else:
+        mess_capt_entities = update.edited_message.caption_entities
+        mess_entities = update.edited_message.entities
 
     # проверка есть ли хэштег
     if mess_capt_entities or mess_entities:
         if mess_capt_entities:
             # если есть фотка
-            hashtag_text = update.message.parse_caption_entity(mess_capt_entities[0])
+            if not update.edited_message:
+                hashtag_text = update.message.parse_caption_entity(
+                    mess_capt_entities[0]
+                )
+            else:
+                hashtag_text = update.edited_message.parse_caption_entity(
+                    mess_capt_entities[0]
+                )
         else:
             # если её нет
-            hashtag_text = update.message.parse_entity(mess_entities[0])
+            if not update.edited_message:
+                hashtag_text = update.message.parse_entity(mess_entities[0])
+            else:
+                hashtag_text = update.edited_message.parse_entity(mess_entities[0])
 
     if hashtag_text:
         # Check if the hashtag is valid
         if hashtag_text in VALID_HASHTAGS.keys():
-            handlers.funcs.add_homework(chat_id, hashtag_text, update.message.id)
+            if not update.edited_message:
+                handlers.funcs.add_homework(chat_id, hashtag_text, update.message.id)
+            else:
+                handlers.funcs.add_homework(
+                    chat_id, hashtag_text, update.edited_message.id
+                )
 
             # Log the saved homework
             handlers.log.logger.info(
@@ -108,35 +75,54 @@ async def save(update: Update, context: ContextTypes.DEFAULT_TYPE):
                 chat_title,
             )
 
-            await update.message.reply_text(
-                random.choice(
-                    [
-                        "Я это запомню...",
-                        "Мдаа, зачем это делать..",
-                        "Ну устно, так устно))",
-                        "Пон.",
-                        "Меняй!",
-                        "No comments",
-                        "Предлагаю не делать)",
-                        "Делайте тг-ботов, а не вот это вот всё",
-                        "Не придумал, что ответить",
-                        "Сомнительноо, но окэй...",
-                        "Вот мне лично это не интересно, за других сказать не могу",
-                        "Соболезную, ребят...",
-                        "Может быть, стоит обсудить это ещё раз?",
-                        "Давайте просто наслаждаться моментом",
-                        "Что-то в этом есть, но может ну его?..",
-                        "Не в моих интересах.",
-                    ]
+            if not update.edited_message:
+                await update.message.reply_text(
+                    random.choice(
+                        [
+                            "Я это запомню...",
+                            "Мдаа, зачем это делать..",
+                            "Ну устно, так устно))",
+                            "Пон.",
+                            "Меняй!",
+                            "No comments",
+                            "Предлагаю не делать)",
+                            "Делайте тг-ботов, а не вот это вот всё",
+                            "Не придумал, что ответить",
+                            "Сомнительноо, но окэй...",
+                            "Вот мне лично это не интересно, за других сказать не могу",
+                            "Соболезную, ребят...",
+                            "Может быть, стоит обсудить это ещё раз?",
+                            "Давайте просто наслаждаться моментом",
+                            "Что-то в этом есть, но может ну его?..",
+                            "Не в моих интересах.",
+                        ]
+                    )
                 )
-            )
+            else:
+                await update.edited_message.reply_text(
+                    random.choice(
+                        [
+                            "Ладно, раз изменил, то запомню ещё разок",
+                            "Я то запомню, а ты??",
+                            "СМОТРИТЕ ВСЕ! ОН ИЗМЕНИЛ СООБЩЕНИЕ!!",
+                            "Ну и что поменялось? :|",
+                            "Ну началось! Я только запомнил, а ты уже правишь...",
+                            "Да сколько можно править, я же не машина для запоминания!",
+                        ]
+                    )
+                )
 
             return NEXT
 
     # Save the last homework if no new homework is provided
     last_homework = handlers.funcs.get_last_homework(chat_id)
     if last_homework:
-        handlers.funcs.add_homework(chat_id, last_homework, update.message.id)
+        if not update.edited_message:
+            handlers.funcs.add_homework(chat_id, last_homework, update.message.id)
+        else:
+            handlers.funcs.add_homework(
+                chat_id, last_homework, update.edited_message.id
+            )
 
     return ConversationHandler.END
 
