@@ -91,8 +91,6 @@ async def save(update: Update, context: ContextTypes.DEFAULT_TYPE):
                             "Сомнительноо, но окэй...",
                             "Вот мне лично это не интересно, за других сказать не могу",
                             "Соболезную, ребят...",
-                            "Может быть, стоит обсудить это ещё раз?",
-                            "Давайте просто наслаждаться моментом",
                             "Что-то в этом есть, но может ну его?..",
                             "Не в моих интересах.",
                         ]
@@ -129,3 +127,6 @@ async def save(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
 async def stop(update: Update, context: ContextTypes.DEFAULT_TYPE):
     return ConversationHandler.END
+
+
+# by aksenianets

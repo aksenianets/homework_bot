@@ -8,7 +8,7 @@ from handlers import funcs
 
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
     log.logger.info("start %s", update.message.from_user.id)
-    
+
     reply_markup = [x[1] for x in funcs.get_chats()]
 
     text = "Привет, из какого чата будешь?"
@@ -40,7 +40,7 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
         )
 
 
-async def button(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None: 
+async def button(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     query = update.callback_query
     await query.answer()
     chat_hr = query.data
@@ -94,3 +94,6 @@ async def button(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
             log.logger.warning("Chat %s has been deleted", chats[user_chat])
     else:
         await query.edit_message_text("Действие отменено")
+
+
+# by aksenianets

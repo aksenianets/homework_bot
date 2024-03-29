@@ -2,7 +2,7 @@ from typing import Final
 
 
 class TgKeys:
-    TOKEN: Final = "6881975491:AAGiI7F2mQ1zpCz5oZjcNTVzeTWDgYeew4s"
+    TOKEN: Final = "YOUR BOT TOKEN HERE"
 
 
 class ValHash:
@@ -33,13 +33,15 @@ class ValHash:
 
 
 class Passw:
-    PASSWORD: Final = "26-03-23-01"
+    PASSWORD: Final = "PASSWORD HERE"
 
 
 class AdmPassw:
-    ADMINPASSWORD: Final = "arbuziki-giraffof-est"
+    ADMINPASSWORD: Final = "ADMIN PASSWORD HERE"
 
 
 class AbsPath:
-    # ABSOLUTEPATH: Final = "/home/aksenianets/"
     ABSOLUTEPATH: Final = ""
+
+
+# by aksenianets

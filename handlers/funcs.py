@@ -293,3 +293,6 @@ def grouper(iterable: list, n: int) -> list[str]:
         result[-1] = result[-1][: result[-1].index(None)]
 
     return result
+
+
+# by aksenianets

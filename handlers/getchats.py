@@ -70,3 +70,6 @@ async def show_chats(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None
     groups = [x[1] for x in funcs.get_chats()]
     text = f"Member of: {', '.join(groups) or '-'}"
     await update.effective_message.reply_text(text)
+
+
+# by aksenianets

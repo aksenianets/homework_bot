@@ -221,3 +221,6 @@ async def stop(update: Update, context: ContextTypes.DEFAULT_TYPE):
         disable_web_page_preview=True,
     )
     return ConversationHandler.END
+
+
+# by aksenianets

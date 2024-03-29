@@ -7,7 +7,7 @@ from telegram.ext import ContextTypes
 
 from handlers.log import logger
 
-DEVELOPER_CHAT_ID = 676928947
+DEVELOPER_CHAT_ID = "YOUR USERID"
 
 
 async def error_handler(update: object, context: ContextTypes.DEFAULT_TYPE) -> None:
@@ -40,3 +40,6 @@ async def error_handler(update: object, context: ContextTypes.DEFAULT_TYPE) -> N
     await context.bot.send_message(
         chat_id=DEVELOPER_CHAT_ID, text=message, parse_mode=ParseMode.HTML
     )
+
+
+# by aksenianets
