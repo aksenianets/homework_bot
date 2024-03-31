@@ -5,3 +5,5 @@ __pycache__
 Bot.py
 data.sqbpro
 token.txt
+handlers/senderror.py
+handlers/env.py

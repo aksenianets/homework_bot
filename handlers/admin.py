@@ -24,7 +24,7 @@ async def get_admin_rights(update: Update, context: ContextTypes.DEFAULT_TYPE):
             funcs.make_admin(update.message.from_user.id)
 
             await update.message.reply_text(
-                "Теперь ты можешь использовать\n/setschedule\nА ещё отпрвлять дз не в общий чат, а прямо мне"
+                "Теперь ты можешь использовать\n/setschedule"
             )
         else:
             await update.message.reply_text("Да ты уже ведь админ, бро")
@@ -35,7 +35,6 @@ async def get_admin_rights(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
 async def unadmin_all(update: Update, context: ContextTypes.DEFAULT_TYPE):
     log.logger.warning("unadmin %s", update.message.from_user.id)
-
     if update.message.text == f"/unadmin {ADMINPASSWORD}":
         if funcs.check_admin(update.message.from_user.id):
             log.logger.warning(
