@@ -216,7 +216,7 @@ async def stop(update: Update, context: ContextTypes.DEFAULT_TYPE):
     log.logger.warning("cancel %s", update.message.from_user.id)
 
     await update.message.reply_markdown_v2(
-        text="[Stop, wait a minute](https://youtu.be/w_Fk0i9Vq_o)\ \nКороче, остановил действие",
+        text="[Stop, wait a minute](https://youtu.be/w_Fk0i9Vq_o)\nКороче, остановил действие",
         disable_web_page_preview=True,
     )
     return ConversationHandler.END

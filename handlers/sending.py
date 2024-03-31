@@ -41,7 +41,6 @@ async def send_all(update: Update, context: ContextTypes.DEFAULT_TYPE):
                     except:
                         no_homework.append(x)
                 else:
-                    await update.message.reply_text("2")
                     for x in homework:
                         try:
                             async with Bot(BOT_TOKEN) as bot:
@@ -65,7 +64,6 @@ async def send_all(update: Update, context: ContextTypes.DEFAULT_TYPE):
                 no_homework.append(x)
 
     if fl:
-        print(no_homework)
         await update.message.reply_text(
             f"Упс, дз по {', '.join(no_homework)} отправить не вышло((",
             reply_markup=ReplyKeyboardRemove(),

@@ -18,6 +18,7 @@ from handlers import (
     env,
     funcs,
     senderror,
+    greetings,
 )
 
 if funcs.check_all():
@@ -127,6 +128,10 @@ if __name__ == "__main__":
 
     # other
     application.add_error_handler(senderror.error_handler)
+
+    application.add_handler(
+        CommandHandler("explainmeplease", greetings.explain_all, filters.ChatType.GROUP)
+    )
 
     # deleted - i dont know, but it breaks bot((
     # application.add_handler(

@@ -2,9 +2,7 @@ import random
 from telegram import Update
 from telegram.ext import ContextTypes, ConversationHandler
 
-import handlers.funcs
-import handlers.log
-import handlers.env
+import handlers.funcs, handlers.log, handlers.env, handlers.greetings
 
 NEXT = ""
 VALID_HASHTAGS = handlers.env.ValHash.VALIDHASHTAGS
@@ -34,6 +32,12 @@ async def save(update: Update, context: ContextTypes.DEFAULT_TYPE):
     if not update.edited_message:
         mess_capt_entities = update.message.caption_entities
         mess_entities = update.message.entities
+
+        if len(mess_entities) >= 3:
+            await update.message.reply_text("Привет, используйте /explainmeplease")
+
+            return ConversationHandler.END
+
     else:
         mess_capt_entities = update.edited_message.caption_entities
         mess_entities = update.edited_message.entities
@@ -53,7 +57,13 @@ async def save(update: Update, context: ContextTypes.DEFAULT_TYPE):
         else:
             # если её нет
             if not update.edited_message:
-                hashtag_text = update.message.parse_entity(mess_entities[0])
+                hashtag_text = update.message.parse_entity(mess_entities)
+                if len(hashtag_text) >= 3:
+                    handlers.greetings.explain_all()
+
+                    return ConversationHandler.END
+                else:
+                    hashtag_text = hashtag_text[0]
             else:
                 hashtag_text = update.edited_message.parse_entity(mess_entities[0])
 

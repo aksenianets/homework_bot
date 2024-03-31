@@ -11,9 +11,8 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
     reply_markup = [x[1] for x in funcs.get_chats()]
 
-    text = "Привет, из какого чата будешь?"
-    users = [x[0] for x in funcs.get_users()]
-    if update.message.from_user.id in users:
+    text = f"Привет {update.message.from_user.username}, из какого чата будешь?"
+    if update.message.text != "/start first":
         reply_markup.append("Отмена")
         text = "В какой чат хочешь перейти?"
     if reply_markup:
