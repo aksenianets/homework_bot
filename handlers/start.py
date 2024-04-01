@@ -4,15 +4,19 @@ from telegram.ext import ContextTypes
 
 from handlers import log
 from handlers import funcs
+from handlers import env
+
+VALIDHASHTAGS = env.ValHash.VALIDHASHTAGS
 
 
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    log.logger.info("start %s", update.message.from_user.id)
+    log.logger.info("start %s", update.message.from_user.username)
 
     reply_markup = [x[1] for x in funcs.get_chats()]
+    users = funcs.get_users()[0]
 
     text = f"Привет {update.message.from_user.username}, из какого чата будешь?"
-    if update.message.text != "/start first":
+    if update.message.text != "/start first" and update.message.from_user.id in users:
         reply_markup.append("Отмена")
         text = "В какой чат хочешь перейти?"
     if reply_markup:
@@ -32,11 +36,25 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
         reply_markup = InlineKeyboardMarkup(reply_list)
 
-        await context.bot.send_message(
-            chat_id=update.effective_chat.id,
-            text=text,
-            reply_markup=reply_markup,
-        )
+        if update.message.text == "/start first":
+            await update.message.reply_text(
+                "Отправьте следующее сообщение в чат вашего класса\nВ ЕДИНСТВЕННОМ ЭКЗЕМПЛЯРЕ"
+            )
+            hashs = """
+            #расписание\n#математика\n#русский\n#информатика\n#общага\n#экономика\n#МХК\n#право\n#биология\n#химия\n#литература\n#история\n#обж\n#английский\n#родной\n#проектнаядеятельность\n#интуиция\n#физика\n#графы\n#астрономия\n#география\n#правочеловека
+            """
+            await update.message.reply_text(text=hashs)
+
+            await context.bot.send_message(
+                chat_id=update.effective_chat.id,
+                text="А после этого напишите мне /start",
+            )
+        else:
+            await context.bot.send_message(
+                chat_id=update.effective_chat.id,
+                text=text,
+                reply_markup=reply_markup,
+            )
 
 
 async def button(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:

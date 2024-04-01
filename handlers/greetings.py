@@ -11,7 +11,7 @@ async def explain_all(update: Update, context: ContextTypes.DEFAULT_TYPE):
         await bot.send_message(
             chat_id=update.message.chat.id,
             parse_mode=constants.ParseMode.MARKDOWN_V2,
-            text=f"Оо, привет\nЯ помогу вам быстро получать дамашку, которую вы сюда кинете\nДля начала, [напишите мне](https://t.me/give_my_homework_bot?start=first) и выберите свой чат",
+            text=f"Оо, привет\nЯ помогу вам быстро получать дамашку, которую вы сюда кинете\nДля начала, [напишите мне](https://t.me/give_my_homework_bot?start=first) и отправьте сюда сообщение с хэштегами",
         )
         await bot.send_message(
             chat_id=update.message.chat.id,
