@@ -1,3 +1,4 @@
+import random
 from telegram import Bot, Update, ReplyKeyboardMarkup, ReplyKeyboardRemove
 from telegram.ext import ContextTypes, ConversationHandler
 
@@ -16,7 +17,6 @@ async def send_all(update: Update, context: ContextTypes.DEFAULT_TYPE):
     user_chat = funcs.get_user_info(update.message.from_user.id)[0][1]
     need_to_send = funcs.get_schedule(user_chat, datetime.now().weekday() + 1)
     need_to_send.append("#расписание")
-    fl = True
 
     no_homework = []
     if need_to_send:
@@ -63,7 +63,12 @@ async def send_all(update: Update, context: ContextTypes.DEFAULT_TYPE):
             else:
                 no_homework.append(x)
 
-    if fl:
+    if random.choice(1, 100) % 2 == 0 and random.choice(1, 100) % 3 == 0:
+        await update.message.reply_text(
+            "Ура, поблагодарю своих спосноров:\n1)Влад Смирнов\n2)Егор Судаков\n3)Матея Кляич\n4)Игорь Матросов\n5)Саша Цветкова\n6)Поля Крайнова\n7)Гоша Черткоев\n8)Саша Колодко\nВсем большое спасибо, ваш вклад не будет забыт. И во время сдачи ЕГЭ это +10 к хорошему варианту))"
+        )
+
+    if len(no_homework) != 0:
         await update.message.reply_text(
             f"Упс, дз по {', '.join(no_homework)} отправить не вышло((",
             reply_markup=ReplyKeyboardRemove(),
